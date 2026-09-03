@@ -133,3 +133,13 @@ export async function fetchWindowPlayers(days: number): Promise<CloudPlayer[]> {
   }
   return [...acc.values()].sort((a, b) => b.points - a.points);
 }
+
+/** Sincroniza el progreso local con la nube al iniciar sesión. */
+export function useCloudSync() {
+  const { session, ready } = useSession();
+  const userId = session?.user?.id;
+  useEffect(() => {
+    if (userId) void pullAndMerge(userId);
+  }, [userId]);
+  return { session, ready, userId };
+}
