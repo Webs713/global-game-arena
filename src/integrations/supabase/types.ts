@@ -14,7 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          achievements: string[]
+          avatar: string
+          best_streak: number
+          country: string
+          created_at: string
+          id: string
+          last_played: string | null
+          name: string
+          plays: number
+          points: number
+          streak: number
+          updated_at: string
+        }
+        Insert: {
+          achievements?: string[]
+          avatar?: string
+          best_streak?: number
+          country?: string
+          created_at?: string
+          id: string
+          last_played?: string | null
+          name?: string
+          plays?: number
+          points?: number
+          streak?: number
+          updated_at?: string
+        }
+        Update: {
+          achievements?: string[]
+          avatar?: string
+          best_streak?: number
+          country?: string
+          created_at?: string
+          id?: string
+          last_played?: string | null
+          name?: string
+          plays?: number
+          points?: number
+          streak?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      runs: {
+        Row: {
+          created_at: string
+          game_id: string
+          id: string
+          is_daily: boolean
+          points: number
+          score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          id?: string
+          is_daily?: boolean
+          points?: number
+          score?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          id?: string
+          is_daily?: boolean
+          points?: number
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
