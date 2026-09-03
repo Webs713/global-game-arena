@@ -42,18 +42,21 @@ function AuthPage() {
     e.preventDefault();
     setBusy(true);
     setMsg(null);
-    const fn =
+    const { data, error } =
       mode === "login"
-        ? supabase.auth.signInWithPassword({ email, password })
-        : supabase.auth.signUp({
+        ? await supabase.auth.signInWithPassword({ email, password })
+        : await supabase.auth.signUp({
             email,
             password,
             options: { emailRedirectTo: window.location.origin },
           });
-    const { error } = await fn;
     setBusy(false);
     if (error) {
       setMsg(error.message);
+      return;
+    }
+    if (!data.session) {
+      setMsg("Cuenta creada: confirma tu correo con el enlace que te hemos enviado y vuelve a entrar.");
       return;
     }
     navigate({ to: "/perfil" });
