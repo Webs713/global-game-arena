@@ -51,8 +51,10 @@ export function GameHost({
   }
 
   function finish(score: number, points: number) {
-    setResult(recordRun(gameId, score, points, isDaily));
+    const run = recordRun(gameId, score, points, isDaily);
+    setResult(run);
     setPhase("result");
+    if (userId) void pushRun(userId, run);
   }
 
   if (phase === "intro") {
