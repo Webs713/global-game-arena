@@ -12,6 +12,9 @@ import {
 import { buildBoard } from "@/lib/leaderboard";
 import { NeonButton, Panel, ProgressBar, SectionTitle, StatChip } from "@/components/arcade/ui";
 import { cn } from "@/lib/utils";
+import { pushProfile, useSession } from "@/lib/cloud";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/perfil")({
   head: () => ({
@@ -34,6 +37,7 @@ export const Route = createFileRoute("/perfil")({
 
 function ProfilePage() {
   const { profile, ready } = useProfile();
+  const { user } = useSession();
   const lvl = levelFromPoints(profile.points);
   const board = buildBoard("global", profile, "");
   const you = board.find((r) => r.isYou)!;
@@ -64,6 +68,28 @@ function ProfilePage() {
             {lvl.into} / {lvl.span} XP hacia el nivel {lvl.level + 1}
           </div>
         </div>
+      </Panel>
+
+      <Panel className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="flex-1">
+          <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            Cuenta
+          </div>
+          <div className="mt-1 font-bold">
+            {user
+              ? `Progreso guardado en la nube · ${user.email ?? "cuenta conectada"}`
+              : "Juegas como invitado: tu progreso solo vive en este navegador."}
+          </div>
+        </div>
+        {user ? (
+          <NeonButton tone="surface" onClick={() => void supabase.auth.signOut()}>
+            Cerrar sesión
+          </NeonButton>
+        ) : (
+          <Link to="/auth">
+            <NeonButton>Entrar / crear cuenta</NeonButton>
+          </Link>
+        )}
       </Panel>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -168,6 +194,7 @@ function ProfilePage() {
               onClick={() => {
                 updateIdentity(name, avatar);
                 setSaved(true);
+                if (user) void pushProfile(user.id);
               }}
             >
               Guardar
