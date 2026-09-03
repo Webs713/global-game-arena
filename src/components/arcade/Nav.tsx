@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useProfile, levelFromPoints } from "@/lib/profile";
+import { useCloudSync } from "@/lib/cloud";
 
 const ITEMS = [
   { to: "/play", label: "Jugar", icon: "🎮" },
@@ -11,6 +12,7 @@ const ITEMS = [
 
 export function Nav() {
   const { profile, ready } = useProfile();
+  const { session } = useCloudSync();
   const lvl = levelFromPoints(profile.points);
 
   return (
@@ -39,6 +41,14 @@ export function Nav() {
           </nav>
 
           <div className="ml-auto flex items-center gap-3 md:ml-0">
+            {!session && (
+              <Link
+                to="/auth"
+                className="hidden rounded-lg bg-surface-2 px-3 py-2 text-sm font-bold text-foreground sm:block"
+              >
+                Entrar
+              </Link>
+            )}
             {ready && (
               <div className="hidden text-right sm:block">
                 <div className="font-display text-sm font-extrabold text-primary">
