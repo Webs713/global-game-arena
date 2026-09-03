@@ -36,8 +36,14 @@ export function rivals(scope: Scope, seedExtra = ""): Rival[] {
 
 export type Row = Rival & { rank: number; isYou?: boolean };
 
-export function buildBoard(scope: Scope, you: { name: string; avatar: string; points: number }, seedExtra = ""): Row[] {
+export function buildBoard(
+  scope: Scope,
+  you: { name: string; avatar: string; points: number },
+  seedExtra = "",
+  real: Rival[] = [],
+): Row[] {
   const all = [
+    ...real,
     ...rivals(scope, seedExtra),
     { id: "you", name: you.name, avatar: you.avatar, country: "🌍", points: you.points },
   ].sort((a, b) => b.points - a.points);

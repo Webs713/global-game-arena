@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { buildBoard, type Scope } from "@/lib/leaderboard";
 import { todayKey, useProfile } from "@/lib/profile";
 import { Panel, SectionTitle } from "@/components/arcade/ui";
 import { cn } from "@/lib/utils";
+import { fetchGlobalPlayers, fetchWindowPlayers, useSession, type CloudPlayer } from "@/lib/cloud";
 
 export const Route = createFileRoute("/ranking")({
   head: () => ({
@@ -42,7 +43,23 @@ export function pointsInWindow(
 
 function Ranking() {
   const { profile } = useProfile();
+  const { user } = useSession();
   const [scope, setScope] = useState<Scope>("global");
+  const [real, setReal] = useState<CloudPlayer[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    const load =
+      scope === "global"
+        ? fetchGlobalPlayers()
+        : fetchWindowPlayers(scope === "weekly" ? 7 : 1);
+    void load.then((rows) => {
+      if (active) setReal(rows.filter((r) => r.id !== user?.id && r.points > 0));
+    });
+    return () => {
+      active = false;
+    };
+  }, [scope, user?.id]);
 
   const yourPoints =
     scope === "global"
@@ -55,6 +72,7 @@ function Ranking() {
     scope,
     { ...profile, points: yourPoints },
     scope === "daily" ? todayKey() : scope === "weekly" ? todayKey().slice(0, 7) : "",
+    real.map((r) => ({ ...r })),
   );
   const you = board.find((r) => r.isYou)!;
 

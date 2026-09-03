@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DesafioRouteImport } from './routes/desafio'
 import { Route as LogrosRouteImport } from './routes/logros'
 import { Route as PerfilRouteImport } from './routes/perfil'
@@ -21,6 +22,11 @@ import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesafioRoute = DesafioRouteImport.update({
@@ -61,6 +67,7 @@ const PlayGameIdRoute = PlayGameIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/desafio': typeof DesafioRoute
   '/logros': typeof LogrosRoute
   '/perfil': typeof PerfilRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/desafio': typeof DesafioRoute
   '/logros': typeof LogrosRoute
   '/perfil': typeof PerfilRoute
@@ -81,6 +89,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/desafio': typeof DesafioRoute
   '/logros': typeof LogrosRoute
   '/perfil': typeof PerfilRoute
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/desafio'
     | '/logros'
     | '/perfil'
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/desafio'
     | '/logros'
     | '/perfil'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/desafio'
     | '/logros'
     | '/perfil'
@@ -123,6 +135,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   DesafioRoute: typeof DesafioRoute
   LogrosRoute: typeof LogrosRoute
   PerfilRoute: typeof PerfilRoute
@@ -137,6 +150,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/desafio': {
@@ -205,6 +225,7 @@ const PlayRouteWithChildren = PlayRoute._addFileChildren(PlayRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   DesafioRoute: DesafioRoute,
   LogrosRoute: LogrosRoute,
   PerfilRoute: PerfilRoute,

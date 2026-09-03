@@ -228,3 +228,34 @@ export function resetProfile() {
 }
 
 export const AVATAR_OPTIONS = AVATARS;
+
+/** Perfil local actual (para sincronizar con Lovable Cloud). */
+export function currentProfile(): Profile {
+  return { ...current() };
+}
+
+/** Fusiona el progreso guardado en la nube con el progreso local (gana el mejor). */
+export function mergeRemote(remote: {
+  name: string;
+  avatar: string;
+  points: number;
+  plays: number;
+  streak: number;
+  bestStreak: number;
+  lastPlayed: string | null;
+  achievements: string[];
+}) {
+  const local = current();
+  const isDefaultName = local.name === "Jugador Anónimo";
+  commit({
+    ...local,
+    name: isDefaultName && remote.name ? remote.name : local.name,
+    avatar: isDefaultName && remote.avatar ? remote.avatar : local.avatar,
+    points: Math.max(local.points, remote.points),
+    plays: Math.max(local.plays, remote.plays),
+    streak: Math.max(local.streak, remote.streak),
+    bestStreak: Math.max(local.bestStreak, remote.bestStreak),
+    lastPlayed: local.lastPlayed ?? remote.lastPlayed,
+    achievements: [...new Set([...local.achievements, ...remote.achievements])],
+  });
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { getGame } from "@/lib/games";
 import { recordRun, type RunResult } from "@/lib/profile";
+import { pushRun, useSession } from "@/lib/cloud";
 import { NeonButton } from "./ui";
 import { Reflex } from "../games/Reflex";
 import { Memory } from "../games/Memory";
@@ -33,6 +34,8 @@ export function GameHost({
   isDaily?: boolean;
   onExit?: () => void;
 }) {
+  const { user } = useSession();
+  const userId = user?.id;
   const meta = getGame(gameId);
   const Game = REGISTRY[gameId];
   const [phase, setPhase] = useState<"intro" | "play" | "result">("intro");
@@ -51,8 +54,10 @@ export function GameHost({
   }
 
   function finish(score: number, points: number) {
-    setResult(recordRun(gameId, score, points, isDaily));
+    const run = recordRun(gameId, score, points, isDaily);
+    setResult(run);
     setPhase("result");
+    if (userId) void pushRun(userId, run);
   }
 
   if (phase === "intro") {
