@@ -79,9 +79,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-  name: "google-site-verification",
-  content: "<meta name="google-site-verification" content="WgSe-RfvlTkJNBt2kByOvz-lyNVL5QFf-n5-Fb2xgvA" />",
-},
+        name: "google-site-verification",
+        content: "WgSe-RfvlTkJNBt2kByOvz-lyNVL5QFf-n5-Fb2xgvA",
+      },
       { title: "Arcade Mundial — Competición mundial de minijuegos" },
       {
         name: "description",
